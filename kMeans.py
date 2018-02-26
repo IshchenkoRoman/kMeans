@@ -46,17 +46,18 @@ class KMeans():
 
 		return (self.X)
 
-	def findClosestCentroids(self, X, initial_cenroids):
+	def findClosestCentroids(self, X, initial_centroids):
 
-		index = np.zeros((1, X.shape[0]))
-		len_centorids = initial_cenroids.shape[0]
+		# https://stackoverflow.com/questions/17393989/arrays-used-as-indices-must-be-of-integer-or-boolean-type/24261734#24261734
+		index = np.zeros((1, X.shape[0]), dtype=np.int8)
+		len_centorids = initial_centroids.shape[0]
 
 		k = 0
 		for i in X:
-			mindist = np.sum(np.power(i - initial_cenroids[0], 2))
+			mindist = np.sum(np.power(i - initial_centroids[0], 2))
 			ind = 0
 			for j in range(len_centorids):
-				mind = np.sum(np.power(i - initial_cenroids[j], 2))
+				mind = np.sum(np.power(i - initial_centroids[j], 2))
 				if mind <= mindist:
 					mindist = mind
 					ind = j
@@ -72,7 +73,7 @@ class KMeans():
 		centers = np.zeros((K, X.shape[1]))
 		count_idx = np.zeros((K, 1))
 
-		print(X.shape, idx.shape, centers.shape)
+		# print(X.shape, idx.shape, centers.shape)
 
 		for i in range(len_):
 
@@ -82,14 +83,14 @@ class KMeans():
 		res = np.divide(centers, count_idx)
 		return (res)
 
-	def runkMeans(self, X, initial_cenroids, max_iters, plot_progress=False):
+	def runkMeans(self, X, initial_centroids, max_iters, plot_progress=False):
 
 		if plot_progress:
 			fig, ax = plt.subplots()
 
 		m, n = X.shape
-		K = initial_cenroids.shape[0]
-		centroids = initial_cenroids
+		K = initial_centroids.shape[0]
+		centroids = initial_centroids
 		previous_centroids = centroids
 		idx = np.zeros((m, 1))
 
@@ -152,6 +153,27 @@ class KMeans():
 
 		return (centroids)
 
+	def plotPictures(self, origianl_picture, compressed, centroids, idx, K):
+
+		fig, ax = plt.subplots(1, 3)
+		fig.subplots_adjust(top=0.92, left=0.07, right=0.97, hspace=0.3, wspace=0.3)
+		plt.subplot(1, 3, 1)
+		plt.imshow(origianl_picture)
+		plt.title("Original")
+
+		plt.subplot(1, 3, 2)
+		plt.imshow(compressed)
+		plt.title("Compressed, with {:d} colors.".format(K))
+
+		plt.subplot(1, 3, 3)
+		plt.imshow(compressed)
+		palette = colors.hsv_to_rgb( np.column_stack([ np.linspace(0, 1, K+1), np.ones(((K+1), 2) ) ]) )
+		color = np.array([palette[int(i)] for i in idx])
+		cent = plt.scatter(centroids[:,0] * 128, centroids[:,1] * 128, marker='h', s=100, c=palette, linewidth=2, edgecolor='k')
+		plt.title("With Centroids")
+		fig.show()
+		plt.show()
+
 
 def main():
 	
@@ -169,8 +191,8 @@ def main():
 	
 	# 3 Centroids
 	K = 3
-	initial_cenroids = np.array([[3, 3], [6, 2], [8, 5]])
-	idx = kmeans.findClosestCentroids(kmeans.getX2(), initial_cenroids)
+	initial_centroids = np.array([[3, 3], [6, 2], [8, 5]])
+	idx = kmeans.findClosestCentroids(kmeans.getX2(), initial_centroids)
 	print(idx[:3])
 
 	"""
@@ -185,14 +207,14 @@ def main():
 	# Run K-Means algorith on example dataset that was provided
 	"""	
 
-	# c, i = kmeans.runkMeans(kmeans.X2, initial_cenroids, 10, plot_progress=True)
-	# kmeans.KmeansInitCentroids(kmeans.X2, K)
+	c, i = kmeans.runkMeans(kmeans.X2, initial_centroids, 10, plot_progress=True)
+	kmeans.KmeansInitCentroids(kmeans.X2, K)
 
-	# new_centroid = kmeans.KmeansInitCentroids(kmeans.getX2(), K)
+	new_centroid = kmeans.KmeansInitCentroids(kmeans.getX2(), K)
 	# print(new_centroid)
 
-	# c, i = kmeans.runkMeans(kmeans.getX2(), new_centroid, 10, plot_progress=True)
-	# kmeans.KmeansInitCentroids(kmeans.getX2(), K)
+	c, i = kmeans.runkMeans(kmeans.getX2(), new_centroid, 10, plot_progress=True)
+	kmeans.KmeansInitCentroids(kmeans.getX2(), K)
 
 	"""
 	# ===================== Part 4: K-Means Clustering on Pixels ==============
@@ -202,8 +224,8 @@ def main():
 	K = 16
 	max_iters = 10
 
-	initial_cenroids = kmeans.KmeansInitCentroids(kmeans.getX(), K)
-	centroids, idx = kmeans.runkMeans(kmeans.getX(), initial_cenroids, max_iters)
+	initial_centroids = kmeans.KmeansInitCentroids(kmeans.getX(), K)
+	centroids, idx = kmeans.runkMeans(kmeans.getX(), initial_centroids, max_iters)
 
 	"""
 	# ===================== Part 5: Image Compression =========================
@@ -217,11 +239,15 @@ def main():
 	idx = kmeans.findClosestCentroids(kmeans.getX(), centroids)
 
 	"""
-	# Now, we can recover the image from the indices (idx) by mapping each pixel
+	# Now, we can recover the image from the indices (idx) by mapping each pixel 
+	# (specified by it's index in idx) to the centroid value
 	"""
 
-	print(idx)
-	# X_recovered = centroids[idx, :]
+	print(centroids)
+	X_recovered = centroids[idx[:], :]
+	X_recovered = X_recovered.reshape(kmeans.A.shape[0], kmeans.A.shape[1], 3, order='F')
+
+	kmeans.plotPictures(kmeans.A, X_recovered, centroids, idx, K)
 
 
 
