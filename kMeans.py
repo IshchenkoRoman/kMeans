@@ -225,7 +225,7 @@ def main():
 	max_iters = 10
 
 	initial_centroids = kmeans.KmeansInitCentroids(kmeans.getX(), K)
-	centroids, idx = kmeans.runkMeans(kmeans.getX(), initial_centroids, max_iters)
+	centroids, idx = kmeans.runkMeans(kmeans.getX(), initial_centroids, max_iters, plot_progress=True)
 
 	"""
 	# ===================== Part 5: Image Compression =========================
