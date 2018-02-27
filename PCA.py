@@ -206,64 +206,64 @@ def main():
 	path_faces = current_path + "/ex7faces.mat"
 	pca = PCA(path_data, path_faces)
 
-	# # pca.plotData(pca.getX())
+	pca.plotData(pca.getX())
 
-	# """
-	# # ==================== Part 2: Prinipal Components Analysis ===============
-	# """
+	"""
+	# ==================== Part 2: Prinipal Components Analysis ===============
+	"""
 
-	# X_norm, mu, sigma = pca.featureNormalize(pca.getX())
-	# u, s, _ = pca.pca(X_norm)
-	# # pca.plotData(pca.getX(), (0.5, 6.5), (2, 8), mu, s, u, 1)
-	# # pca.plotData(pca.getX(), mu, s, u, 1)
+	X_norm, mu, sigma = pca.featureNormalize(pca.getX())
+	u, s, _ = pca.pca(X_norm)
+	pca.plotData(pca.getX(), (0.5, 6.5), (2, 8), mu, s, u, 1)
+	pca.plotData(pca.getX(), mu, s, u, 1)
 
-	# """
-	# # =================== Part 3: Dimension Reduction =========================
-	# # Implement projection step to map the data onto the first k eigenvectors.
-	# # Then plot the data in tthis reduced dimension spac. This will show what data
-	# # looks like, when using inly correspoding eigenvectors to reconstruct it.
-	# """
+	"""
+	# =================== Part 3: Dimension Reduction =========================
+	# Implement projection step to map the data onto the first k eigenvectors.
+	# Then plot the data in tthis reduced dimension spac. This will show what data
+	# looks like, when using inly correspoding eigenvectors to reconstruct it.
+	"""
 
-	# # pca.plotData(X_norm, (-4, 3), (-4, 3))
-	# K = 1
-	# Z = pca.projectData(X_norm ,u, K)
-	# X_rec = pca.recoverData(Z, u, K)
-	# # pca.plotProjection(X_norm, X_rec)
+	pca.plotData(X_norm, (-4, 3), (-4, 3))
+	K = 1
+	Z = pca.projectData(X_norm ,u, K)
+	X_rec = pca.recoverData(Z, u, K)
+	pca.plotProjection(X_norm, X_rec)
 
-	# """
-	# # =================== Part 4: Loading and Visualizing FAce Data ===========
-	# """
+	"""
+	# =================== Part 4: Loading and Visualizing FAce Data ===========
+	"""
 
-	# # print(pca.Xf.shape)
-	# # pca.plotFaces(pca.getXFaces())
+	# print(pca.Xf.shape)
+	pca.plotFaces(pca.getXFaces())
 
-	# """
-	# # =================== Part 5: PCA on Face Data: Eigenfaces ================
-	# # Run PCA and visualise the eigenvectirs which are in thhis case eigenfaces
-	# # We display first 36 eigenfaces
-	# """
+	"""
+	# =================== Part 5: PCA on Face Data: Eigenfaces ================
+	# Run PCA and visualise the eigenvectirs which are in thhis case eigenfaces
+	# We display first 36 eigenfaces
+	"""
 
-	# X_norm, mu, sigma = pca.featureNormalize(pca.getXFaces())
+	X_norm, mu, sigma = pca.featureNormalize(pca.getXFaces())
 
-	# U, S, VH = pca.pca(X_norm)
-	# print(U.shape)
-	# # pca.plotFaces(-U.T, 6, "Principal components on the face dataset")
+	U, S, VH = pca.pca(X_norm)
+	print(U.shape)
+	pca.plotFaces(-U.T, 6, "Principal components on the face dataset")
 
-	# """
-	# # =================== Part 6: Dimension Reduction for Faces ===============
-	# # Project images to the eigen space using the top k eigenvectors
-	# """
+	"""
+	# =================== Part 6: Dimension Reduction for Faces ===============
+	# Project images to the eigen space using the top k eigenvectors
+	"""
 
-	# K = 100
-	# Z = pca.projectData(X_norm, U, K)
+	K = 100
+	Z = pca.projectData(X_norm, U, K)
 
-	# """
-	# # =================== Part 7: Visualization of Faces after PCA Dimension Reduction 
-	# # Project images to the eigen space using the top k eigenvectors 
-	# """
+	"""
+	# =================== Part 7: Visualization of Faces after PCA Dimension Reduction 
+	# Project images to the eigen space using the top k eigenvectors 
+	"""
 
-	# X_rec = pca.recoverData(Z, U, K)
-	# pca.test(X_norm, X_rec)
+	X_rec = pca.recoverData(Z, U, K)
+	pca.test(X_norm, X_rec)
 
 	"""
 	# =================== Part 8(a): PCA For Visualisation =======================
